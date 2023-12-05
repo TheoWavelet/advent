@@ -1,22 +1,22 @@
 // import { inputs } from './unputs.ts';
-const inputsText = await Deno.readTextFile('./5/inputs-test.txt');
-// const inputsText = await Deno.readTextFile('./5/inputs-text.txt');
+// const inputsText = await Deno.readTextFile('./5/inputs-test.txt');
+const inputsText = await Deno.readTextFile('./5/inputs-text.txt');
 const inputs = inputsText.split('\n\r\n').map((input) => input.split('\n').map((row) => row.replace('\r', '')));
-console.log('inputs :', inputs);
+// console.log('inputs :', inputs);
 
 type mapType = 'seed' | 'soil' | 'fertilizer' | 'water' | 'light' | 'temperature' | 'humidity' | 'location';
 const seeds: number[] = [];
 const maps = inputs
   .filter((row) => {
     if (row.find((map) => map.includes('seeds'))) {
-      console.log('row :', row);
+      // console.log('row :', row);
       seeds.push(
         ...row[0]
           .split(' ')
           .map((seed) => parseInt(seed))
           .filter((seed) => !isNaN(seed))
       );
-      console.log('seeds :', seeds);
+      // console.log('seeds :', seeds);
     } else {
       return true;
     }
@@ -55,62 +55,48 @@ const maps = inputs
 const smallestSeedLocation = seeds.reduce((acc, seed) => {
   const seedSoil = maps
     .find((map) => map.dest === 'seed')
-    ?.points.find((point) => point.destP <= seed && point.destEndP >= seed);
-  const soil = seedSoil?.destEndP - seed + seedSoil?.startP || seed;
+    ?.points.find((point) => point.startP <= seed && point.startEndp >= seed);
+  const soil = seedSoil?.destEndP - (seedSoil?.startEndp - seed) || seed;
   const soilFartilizer = maps
     .find((map) => map.dest === 'soil')
-    ?.points.find((point) => point.destP <= soil && point.destEndP >= soil);
-  const fertilizer = soilFartilizer?.destEndP - soil + soilFartilizer?.startP || soil;
+    ?.points.find((point) => point.startP <= soil && point.startEndp >= soil);
+  const fertilizer = soilFartilizer?.destEndP - (soilFartilizer?.startEndp - soil) || soil;
   const fertilizerWater = maps
     .find((map) => map.dest === 'fertilizer')
-    ?.points.find((point) => point.destP <= fertilizer && point.destEndP >= fertilizer);
-  const water = fertilizerWater?.destEndP - fertilizer + fertilizerWater?.startP || fertilizer;
+    ?.points.find((point) => point.startP <= fertilizer && point.startEndp >= fertilizer);
+  const water = fertilizerWater?.destEndP - (fertilizerWater?.startEndp - fertilizer) || fertilizer;
   const waterLight = maps
     .find((map) => map.dest === 'water')
-    ?.points.find((point) => point.destP <= water && point.destEndP >= water);
-  const light = waterLight?.destEndP - water + waterLight?.startP || water;
+    ?.points.find((point) => point.startP <= water && point.startEndp >= water);
+  const light = waterLight?.destEndP - (waterLight?.startEndp - water) || water;
   const lightTemperature = maps
     .find((map) => map.dest === 'light')
-    ?.points.find((point) => point.destP <= light && point.destEndP >= light);
-  const temperature = lightTemperature?.destEndP - light + lightTemperature?.startP || light;
+    ?.points.find((point) => point.startP <= light && point.startEndp >= light);
+  const temperature = lightTemperature?.destEndP - (lightTemperature?.startEndp - light) || light;
   const temperatureHumidity = maps
     .find((map) => map.dest === 'temperature')
-    ?.points.find((point) => point.destP <= temperature && point.destEndP >= temperature);
-  const humidity = temperatureHumidity?.destEndP - temperature + temperatureHumidity?.startP || temperature;
+    ?.points.find((point) => point.startP <= temperature && point.startEndp >= temperature);
+  const humidity = temperatureHumidity?.destEndP - (temperatureHumidity?.startEndp - temperature) || temperature;
   const humidityLocation = maps
     .find((map) => map.dest === 'humidity')
-    ?.points.find((point) => point.destP <= humidity && point.destEndP >= humidity);
-  const location = humidityLocation?.destEndP - humidity + humidityLocation?.startP || humidity;
-
-  // const soilFartilizer =
-  //   maps
-  //     .find((map) => map.dest === 'soil')
-  //     ?.points.find((point) => point.startP <= seedSoil && point.startEndp >= seedSoil)?.dest || seedSoil;
-  // const fertilizerWater =
-  //   maps
-  //     .find((map) => map.dest === 'fertilizer')
-  //     ?.points.find((point) => point.startP <= soilFartilizer && point.startEndp >= soilFartilizer)?.dest ||
-  //   soilFartilizer;
-  // const waterLight =
-  //   maps
-  //     .find((map) => map.dest === 'water')
-  //     ?.points.find((point) => point.startP <= fertilizerWater && point.startEndp >= fertilizerWater)?.dest ||
-  //   fertilizerWater;
-  // const lightTemperature =
-  //   maps
-  //     .find((map) => map.dest === 'light')
-  //     ?.points.find((point) => point.startP <= waterLight && point.startEndp >= waterLight)?.dest || waterLight;
-  // const temperatureHumidity =
-  //   maps
-  //     .find((map) => map.dest === 'temperature')
-  //     ?.points.find((point) => point.startP <= lightTemperature && point.startEndp >= lightTemperature)?.dest ||
-  //   lightTemperature;
-  // const humidityLocation =
-  //   maps
-  //     .find((map) => map.dest === 'humidity')
-  //     ?.points.find((point) => point.startP <= temperatureHumidity && point.startEndp >= temperatureHumidity)?.dest ||
-  //   temperatureHumidity;
-  // console.log('humidityLocation :', humidityLocation);
+    ?.points.find((point) => point.startP <= humidity && point.startEndp >= humidity);
+  const location = humidityLocation?.destEndP - (humidityLocation?.startEndp - humidity) || humidity;
+  // if (seed === 13) {
+  //   console.log('seedSoil :', seedSoil);
+  //   console.log('soil :', soil);
+  //   console.log('soilFartilizer :', soilFartilizer);
+  //   console.log('fertilizer :', fertilizer);
+  //   console.log('fertilizerWater :', fertilizerWater);
+  //   console.log('water :', water);
+  //   console.log('waterLight :', waterLight);
+  //   console.log('light :', light);
+  //   console.log('lightTemperature :', lightTemperature);
+  //   console.log('temperature :', temperature);
+  //   console.log('temperatureHumidity :', temperatureHumidity);
+  //   console.log('humidity :', humidity);
+  //   console.log('humidityLocation :', humidityLocation);
+  //   console.log('location :', location);
+  // }
   if (location < acc) {
     return location;
   }
