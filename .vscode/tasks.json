@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "tsc",
+			"problemMatcher": [],
+			"label": "npm: tsc",
+			"detail": "tsc"
+		},
+		{
+			"type": "deno",
+			"command": "run",
+			"args": [
+				"--watch",
+				"2/index.ts"
+			],
+			"label": "deno: run"
+		},
+		{
+			"type": "shell",
+			"command": "deno run 2/index.ts",
+			"label": "deno",
+			"detail": "tsc index.ts"
+		}
+	]
+}
