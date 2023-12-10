@@ -1,9 +1,11 @@
-const inputsText = await Deno.readTextFile('./10/inputs-test.txt');
-// const inputsText = await Deno.readTextFile('./10/inputs-text.txt');
+// const inputsText = await Deno.readTextFile('./10/inputs-test.txt');
+// const isTest = true;
+const inputsText = await Deno.readTextFile('./10/inputs-text.txt');
+const isTest = false;
 // const inputs = inputsText.split('\n').map((row) => row.replace('\r', ''));
 const inputs = inputsText.split('\n').map((row) => row.replace('\r', '').split(''));
 // console.log('inputs :', inputs);
-const data = inputs.map((row) => row.map((col) => ({ col, inLoop: false })));
+const data = inputs.map((row) => row.map((col) => ({ col, inLoop: col === 'S' ? true : false })));
 type Point = {
   p: string;
   dir: 'right' | 'bottom' | 'top' | 'left';
@@ -29,28 +31,31 @@ const pointDIrections = {
   '|': ['top', 'bottom'],
   '-': ['left', 'right'],
 } as const;
-// let currentPoint: Point = {
-//   p: 'J',
-//   dir: 'top',
-//   pos: {
-//     x: 10,
-//     y: 61,
-//   },
-//   parent: null,
-//   next: null,
-//   index: 0,
-// };
 let currentPoint: Point = {
-  p: 'F',
-  dir: 'right',
+  p: 'J',
+  dir: 'left',
   pos: {
-    x: 0,
-    y: 2,
+    x: 10,
+    y: 61,
   },
   parent: null,
   next: null,
   index: 0,
 };
+let currentPointTest: Point = {
+  p: 'F',
+  dir: 'left',
+  pos: {
+    x: 4,
+    y: 0,
+  },
+  parent: null,
+  next: null,
+  index: 0,
+};
+if (isTest) {
+  currentPoint = currentPointTest;
+}
 let loopLength = 0;
 const loop = ['S' as any] as (keyof typeof pointDIrections)[];
 // const loop = ['F'] as (keyof typeof pointDIrections)[];
@@ -73,12 +78,6 @@ while (true) {
   const nextP = inputs[xy[0]][xy[1]] as keyof typeof pointDIrections;
   // const nextP = inputs[xy[0]][xy[1]] as keyof typeof pointDIrections;
   if ((nextP as any) === 'S') {
-    // console.log("(nextP as any) === 'S' :", (nextP as any) === 'S');
-    // console.log('inputs :', inputs);
-    // console.log('inputs :', inputs);
-    // console.log('xy :', xy);
-    // console.log('nextP :', nextP);
-    // console.log('loopLength :', loopLength);
     break;
   }
   loop.push(nextP);
@@ -95,23 +94,25 @@ while (true) {
   };
   currentPoint = currentPoint.next;
 }
-// console.log('currentPoint :', currentPoint);
-// console.log('loop :', loop);
-console.log('loop :', loop.length);
-// console.log('loop :', loop[Math.floor(loop.length / 2)]);
-console.log('Math.floor(loop.length / 2) :', Math.floor(loop.length / 2));
-// // console.log('loop :', loop[8]);
-// let insideLoop = 0;
-// data.forEach((row) => {
-//   row.forEach((col, index) => {
-//     if (!col.inLoop) {
-//       const leftLooped = row.filter(
-//         (r, i) => index > i && r.inLoop && (r.col === 'I' || r.col === 'L' || r.col === 'J')
-//       );
-//       // console.log('leftLooped :', leftLooped);
-//       leftLooped.length && leftLooped.length % 2 === 1 ? insideLoop++ : '';
-//       console.log('leftLooped.length % 2 :', leftLooped.length % 2);
-//     }
-//   });
-// });
-// console.log('insideLoop :', insideLoop);
+let insideLoop = 0;
+data.forEach((row, j) => {
+  row.forEach((col, index) => {
+    if (!col.inLoop) {
+      const leftLooped = row.filter(
+        (r, i) => index > i && r.inLoop && (r.col === '|' || r.col === 'L' || r.col === 'J' || r.col === 'S')
+      );
+      const rightLooped = row.filter(
+        (r, i) => index < i && r.inLoop && (r.col === '|' || r.col === 'L' || r.col === 'J' || r.col === 'S')
+      );
+
+      if (leftLooped.length && rightLooped.length) {
+        if (leftLooped.length % 2 === 1 && rightLooped.length % 2 === 1) {
+          insideLoop++;
+        }
+      }
+    }
+  });
+});
+// console.log('insideLoop :', data[3]);
+console.log('insideLoop :', insideLoop);
+// console.log('insideLoop :', 0 % 2);
