@@ -1,12 +1,16 @@
 const inputsText = await Deno.readTextFile('./11/inputs-test.txt');
 const isTest = true;
+// 74927389 !
+//
+// 669794948689 !
+// 28474879404200
 // const inputsText = await Deno.readTextFile('./11/inputs-text.txt');
 // const isTest = false;
 // const inputs = inputsText.split('\n').map((row) => row.replace('\r', ''));
 // console.log('inputsText :', inputsText);
 const inputs = inputsText.split('\n').map((row) => row.replace('\r', '').split(''));
 // console.log('inputs :', inputs);
-// console.log('inputs :\n', inputs.map((row) => row.join('')).join('\n'));
+// console.log('inputs :\r', inputs.map((row) => row.join('')).join('\n'));
 
 // const expendedInputs = [] as string[][];
 // inputs.forEach((row) => {
@@ -49,16 +53,10 @@ const inputs = inputsText.split('\n').map((row) => row.replace('\r', '').split('
 // PART TWHO
 let emptyRowIndexes = [] as number[];
 let emptyColsIndexes = [] as number[];
-// inputs.forEach((row, i) => {
-//   if (!row.includes('#')) {
-//     emptyRowIndexes.push(inputs.indexOf(row) + emptyRowIndexes.length);
-//   }
-// });
 inputs.forEach((row, index) => {
   if (!row.includes('#')) {
     emptyRowIndexes.push(index);
-  }
-  if (inputs.every((row) => row[index] === '.')) {
+  } else if (inputs.every((row) => row[index] === '.')) {
     emptyColsIndexes.push(index);
   }
 });
@@ -66,8 +64,8 @@ inputs.forEach((row, index) => {
 console.log('emptyRowIndexes :', emptyRowIndexes);
 console.log('emptyColsIndexes :', emptyColsIndexes);
 const dists = [] as number[][];
-const emptyDist = 10;
-// const emptyDist = 100;
+// const emptyDist = 10;
+const emptyDist = 100;
 // const emptyDist = 1000000;
 inputs.forEach((row, i) => {
   if (emptyRowIndexes.includes(i)) return;
@@ -76,18 +74,30 @@ inputs.forEach((row, i) => {
       inputs.forEach((row, _i) => {
         if (emptyRowIndexes.includes(_i)) return;
         row.forEach((col, _j) => {
-          if (col === '#' && (_i > i || (_i === i && _j > j))) {
-            const distCountRow =
-              emptyRowIndexes.filter((emptyRowIndex) => emptyRowIndex > i && emptyRowIndex < _i).length * emptyDist;
-            console.log('distCountRow :', i, _i, distCountRow);
-            const distCountCol =
-              emptyColsIndexes.filter((emptyColIndex) => emptyColIndex > j && emptyColIndex < _j).length * emptyDist;
-            console.log('distCountCol :', j, _j, distCountCol);
-            dists.push([_i - i + distCountRow, _j - j + distCountCol]);
-            // dists.push([
-            //   _i - i + (distCountRow - (distCountRow ? distCountRow / emptyDist : 0)),
-            //   _j - j + (distCountCol - (distCountCol ? distCountCol / emptyDist : 0)),
-            // ]);
+          // if (col === '#' && (_i > i || (_i === i && _j > j))) {
+          //   const distCountRow = emptyRowIndexes.filter(
+          //     (emptyRowIndex) => emptyRowIndex > Math.min(i, _i) && emptyRowIndex < Math.max(i, _i)
+          //   ).length;
+          //   const distCountCol = emptyColsIndexes.filter(
+          //     (emptyColIndex) => emptyColIndex > Math.min(j, _j) && emptyColIndex < Math.max(j, _j)
+          //   ).length;
+          //   const distCountRowAdded = distCountRow * emptyDist - distCountRow;
+          //   const distCountColAdded = distCountCol * emptyDist - distCountCol;
+          //   // dists.push([_i - i, _j - j]);
+          //   dists.push([Math.abs(_i - i) + distCountRowAdded, Math.abs(_j - j) + distCountColAdded]);
+          //   // dists.push([_i - i, _j - j]);
+          // }
+          if (col === '#' && (_i !== i || _j !== j)) {
+            const distCountRow = emptyRowIndexes.filter(
+              (emptyRowIndex) => emptyRowIndex > Math.min(i, _i) && emptyRowIndex < Math.max(i, _i)
+            ).length;
+            const distCountCol = emptyColsIndexes.filter(
+              (emptyColIndex) => emptyColIndex > Math.min(j, _j) && emptyColIndex < Math.max(j, _j)
+            ).length;
+            const distCountRowAdded = distCountRow * emptyDist - distCountRow;
+            const distCountColAdded = distCountCol * emptyDist - distCountCol;
+            // dists.push([_i - i, _j - j]);
+            dists.push([Math.abs(_i - i) + distCountRowAdded, Math.abs(_j - j) + distCountColAdded]);
             // dists.push([_i - i, _j - j]);
           }
         });
@@ -95,8 +105,12 @@ inputs.forEach((row, i) => {
     }
   });
 });
+// console.log('dists :', dists);
 
-const sum = dists.reduce((acc, dist) => acc + Math.abs(dist[0]) + Math.abs(dist[1]), 0);
-console.log('dists :', dists);
-// console.log('sum :', sum / 2);
+const sum = dists
+  .map((dist) => dist.map((d) => Math.abs(d)))
+  .reduce((acc, dist) => {
+    return acc + Math.abs(dist[0]) + Math.abs(dist[1]);
+  }, 0);
+console.log('sum :', sum / 2);
 console.log('sum :', sum);
