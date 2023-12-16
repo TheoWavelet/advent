@@ -1,7 +1,7 @@
 // const inputsText = await Deno.readTextFile('./13/inputs-test.txt');
 // const isTest = true;
 const inputsText = await Deno.readTextFile('./13/inputs-text.txt');
-const isTest = false;
+// const isTest = false;
 // const inputs = inputsText.split('\n').map((row) => row.replace('\r', ''));
 // console.log('inputsText :', inputsText);
 const inputs = inputsText.split('\n\r\n').map((row) =>
@@ -27,62 +27,62 @@ const rotated = inputs.map((pazz) => rotateMatrix(pazz));
 let sum = 0;
 // find mirror
 inputs.forEach((pazz, i) => {
-  let biggestMirror = 0;
-  let mirrorCoords: number = null;
-  pazz.find((row, i) => {
-    // const mirror = row.join('').match(/(.)\1+/g);
-    if (row.join('') === pazz[i + 1]?.join('')) {
-      let count = 0;
-      for (let index = 0; index < pazz.length; index++) {
-        if (pazz[i - index]?.join('') === pazz[i + 1 + index]?.join('')) {
-          count++;
-        } else if (pazz[i - index]?.join('') && pazz[i + 1 + index]?.join('')) {
-          count = 0;
-          break;
-        } else {
-          break;
-        }
-      }
-      if (count > biggestMirror) {
-        biggestMirror = count;
-        mirrorCoords = i;
-      }
-    }
-  });
-  if (mirrorCoords !== null) {
-    console.log('mirrorCoords :', mirrorCoords + 1);
-    console.log('biggestMirror :', biggestMirror);
-    sum += (mirrorCoords + 1) * 100;
-  }
-});
-rotated.forEach((pazz, i) => {
-  let biggestMirror = 0;
-  let mirrorCoords: number = null;
-  pazz.find((row, i) => {
-    // const mirror = row.join('').match(/(.)\1+/g);
-    if (row.join('') === pazz[i + 1]?.join('')) {
-      let count = 0;
-      for (let index = 0; index < pazz.length; index++) {
-        if (pazz[i - index]?.join('') === pazz[i + 1 + index]?.join('')) {
-          count++;
-        } else if (pazz[i - index]?.join('') && pazz[i + 1 + index]?.join('')) {
-          count = 0;
-          break;
-        } else {
-          break;
-        }
-      }
-      if (count > biggestMirror) {
-        biggestMirror = count;
-        mirrorCoords = i;
-      }
-    }
-  });
-  if (mirrorCoords !== null) {
-    console.log('mirrorCoords :', mirrorCoords + 1);
-    console.log('biggestMirror :', biggestMirror);
-    sum += mirrorCoords + 1;
-  }
-});
+  let biggestMirrorH = 0;
+  let mirrorCoordsH: number = null;
+  const rotated = rotateMatrix(pazz);
+  let mirrorCoordsV: number = null;
+  let biggestMirrorV = 0;
+  for (let i = 0; i < pazz.length; i++) {
+    for (let j = 0; j < pazz[0].length; j++) {
+      pazz[i][j] = pazz[i][j] === '.' ? '#' : '.';
+      pazz.forEach((row, idx) => {
+        if (row.join('') === pazz[idx + 1]?.join('')) {
+          let count = 0;
+          for (let index = 0; index < pazz.length; index++) {
+            if (pazz[idx - index]?.join('') === pazz[idx + 1 + index]?.join('')) {
+              count++;
+            } else if (pazz[idx - index]?.join('') && pazz[idx + 1 + index]?.join('')) {
+              count = 0;
+              break;
+            } else {
+              break;
+            }
+          }
+          if (count > biggestMirrorH && i >= idx - (count - 1) && i <= idx + count) {
 
+            biggestMirrorH = count;
+            mirrorCoordsH = idx;
+          }
+        }
+      });
+      const rotated = rotateMatrix(pazz);
+      rotated.forEach((row, idx) => {
+        if (row.join('') === rotated[idx + 1]?.join('')) {
+          let count = 0;
+          for (let index = 0; index < rotated.length; index++) {
+            if (rotated[idx - index]?.join('') === rotated[idx + 1 + index]?.join('')) {
+              count++;
+            } else if (rotated[idx - index]?.join('') && rotated[idx + 1 + index]?.join('')) {
+              count = 0;
+              break;
+            } else {
+              break;
+            }
+          }
+          if (count > biggestMirrorV && j >= idx - (count - 1) && j <= idx + count) {
+            biggestMirrorV = count;
+            mirrorCoordsV = idx;
+          }
+        }
+      });
+      pazz[i][j] = pazz[i][j] === '.' ? '#' : '.'; // reset
+    }
+  }
+  if (mirrorCoordsH !== null) {
+    sum += (mirrorCoordsH + 1) * 100;
+  }
+  if (mirrorCoordsV !== null) {
+    sum += mirrorCoordsV + 1;
+  }
+});
 console.log('sum :', sum);
