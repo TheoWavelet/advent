@@ -13,7 +13,7 @@ const inputs = inputsText.split('\n\r\n').map((row) =>
 // console.log('inputs :', inputs);
 const rotateMatrix = (matrix: string[][]): string[][] => {
   // Create a new matrix with transposed dimensions
-  let result: string[][] = Array.from({ length: matrix[0].length }, () => Array(matrix.length).fill(0));
+  const result: string[][] = Array.from({ length: matrix[0].length }, () => Array(matrix.length).fill(0));
   // Transpose the matrix into the result, reversing columns as we go
   for (let i = 0; i < result.length; i++) {
     for (let j = 0; j < result[0].length; j++) {
@@ -23,13 +23,13 @@ const rotateMatrix = (matrix: string[][]): string[][] => {
   return result;
 };
 
-const rotated = inputs.map((pazz) => rotateMatrix(pazz));
+// const rotated = inputs.map((pazz) => rotateMatrix(pazz));
 let sum = 0;
 // find mirror
-inputs.forEach((pazz, i) => {
+inputs.forEach((pazz) => {
   let biggestMirrorH = 0;
   let mirrorCoordsH: number = null;
-  const rotated = rotateMatrix(pazz);
+  // const rotated = rotateMatrix(pazz);
   let mirrorCoordsV: number = null;
   let biggestMirrorV = 0;
   for (let i = 0; i < pazz.length; i++) {
