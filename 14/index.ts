@@ -1,6 +1,6 @@
-// const inputsText = await Deno.readTextFile('./14/inputs-test.txt');
+const inputsText = await Deno.readTextFile('./14/inputs-test.txt');
 // const isTest = true;
-const inputsText = await Deno.readTextFile('./14/inputs-text.txt');
+// const inputsText = await Deno.readTextFile('./14/inputs-text.txt');
 // const isTest = false;
 // const inputs = inputsText.split('\n').map((row) => row.replace('\r', ''));
 // console.log('inputsText :', inputsText);
